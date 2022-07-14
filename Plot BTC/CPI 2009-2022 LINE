@@ -1,0 +1,57 @@
+import datetime
+
+import matplotlib
+matplotlib.use('TKAgg')
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+# read data
+data_read = pd.read_excel('My output1.xlsx')
+
+
+# make data frame
+df = pd.DataFrame(data_read)
+# covert to date time
+df['Date'] = pd.to_datetime(df['Date'],format ='%Y-%m-%d')
+
+print(df.info)
+print(df['Date'].dtype)
+
+# subfig
+fig = make_subplots(specs=[[{"secondary_y":True}]])
+# make fig
+
+# plot
+fig.add_trace(
+    go.Scatter(x=df["Date"],y=df['BTC_Value'], name="BTC_Price"),
+    secondary_y=False
+)
+# log
+#fig.update_yaxes(type="log")
+
+# add trace secondly = Ture
+fig.add_trace(
+    go.Scatter(x=df["Date"],y=df['CPI_Value'], name="CPI_%change"),
+    secondary_y=True
+)
+
+
+
+# add title
+fig.update_layout(
+    title_text = "<b>BTC Price / CPI % Change</b>"
+)
+
+# name x-axis
+fig.update_xaxes(title_text="Date Time")
+
+# name y-axis
+fig.update_yaxes(title_text="<b>BTC-Price</b> Y - axis(1)",secondary_y=False)
+fig.update_yaxes(title_text="<b>CPI-%Change</b> Y - axis(2)",secondary_y=True)
+
+fig.show()
